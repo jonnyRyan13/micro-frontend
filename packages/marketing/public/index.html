@@ -3,5 +3,23 @@
   <head></head>
   <body>
     <div id="_marketing-dev-root"></div>
+    <div id="magicDiv"></div>
+    <fancy-app></fancy-app>
+    <script type="text/javascript">
+
+      (function() {
+        // create a new div element
+        const appNode = document.createElement("app-node");
+        // and give it some content
+        const newContent = document.createTextNode("Hello, app-node");
+        // add the text node to the newly created div
+        appNode.appendChild(newContent);
+        // add the newly created element and its content into the DOM
+        const magicDiv = document.getElementById("magicDiv");
+        magicDiv.appendChild(appNode);
+        console.info('Hello, I am addElement');
+      })();
+    </script>
+    <script src="../src/loadScript.js" type="text/javascript"></script>
   </body>
 </html>
