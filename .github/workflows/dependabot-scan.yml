@@ -27,7 +27,6 @@ jobs:
 
       - name: Build Dependabot Docker Image
         run: docker build -t my-dependabot-image -f Dockerfile .
-        working-directory: ./path/to/your/Dockerfile/directory
 
       - name: Run Dependabot Scan with Docker
         run: |
