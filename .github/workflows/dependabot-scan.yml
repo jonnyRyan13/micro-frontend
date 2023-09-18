@@ -23,7 +23,7 @@ jobs:
         run: cd packages/container  && npm ci
 
       - name: Build UI Application
-        run: npm run build
+        run: cd packages/container && npm run build
 
       - name: Build Dependabot Docker Image
         run: docker build -t my-dependabot-image -f Dockerfile .
