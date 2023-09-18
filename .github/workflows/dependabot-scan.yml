@@ -1,44 +1,51 @@
-name: Build and Dependabot Scan TEST
-
+name: Dependabot Vulnerability Scan
+# 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
 on:
-  push:
+  pull_request:
     branches:
-      - master
+      - develop
 
 jobs:
-  build-and-scan:
-    runs-on: ubuntu-latest
+  dependabot-scan:
+    runs-on: uhg-runner
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v2
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: 16 # Adjust the Node.js version as needed
+          node-version: 16.x
 
-
-      - name: Install Dependencies
-        run: cd packages/container  && npm ci
-
-      - name: Build UI Application
-        run: cd packages/container && npm run build
-
-      - name: Build Dependabot Docker Image
-        run: docker build -t my-dependabot-image -f Dockerfile.dependabot .
-
-      - name: Run Dependabot Scan with Docker
+      - name: Checkout Dependabot Script Repo
         run: |
-          docker run --rm -v "$(pwd):/code" -w /code my-dependabot-image \
-            /bin/sh -c "gem install dependabot --no-document && \
-            dependabot --version && \
-            dependabot update --fail-on-high-severity --fail-on-medium-severity --fail-on-low-severity"
+          cd /tmp/
+          git clone https://github.com/dependabot/dependabot-script
 
-      - name: Check for Vulnerabilities
-        id: check-vulnerabilities
-        run: echo "Checking for vulnerabilities"
 
-      - name: Fail Workflow on Vulnerabilities
-        if: steps.check-vulnerabilities.outcome == 'failure'
-        run: exit 1
+      - name: Build Dependabot image
+        run: |
+          cd /tmp/dependabot-script
+          docker build -t "dependabot/dependabot-script" -f Dockerfile .
+
+      - name: Run dependabot
+        env:
+          GITHUB_REPOSITORY: /jonnyRyan13/micro-frontend
+          PACKAGE_MANAGER: docker
+          GITHUB_ACCESS_TOKEN: ${{ secrets.MFE_ACCESS_TOKEN }}
+
+
+        run: |
+          docker run -v $PWD:/src -e PROJECT_PATH=$GITHUB_REPOSITORY -e PACKAGE_MANAGER=$PACKAGE_MANAGER -e DIRECTORY=packages -e GITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN dependabot/dependabot-script
+
+      - name: Fail the Build if Vulnerabilities Found
+        run: |
+          type ./dependabot/dependabot-script/output.json && \
+          if [ -f ./dependabot/dependabot-script/output.json ] && \
+             jq -e '.vulnerabilities | length > 0' ./dependabot/dependabot-script/output.json >/dev/null; then
+            echo "Vulnerabilities found. Blocking the merge."
+            exit 1
+          else
+            echo "No vulnerabilities found."
+          fi
