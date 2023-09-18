@@ -26,7 +26,7 @@ jobs:
         run: cd packages/container && npm run build
 
       - name: Build Dependabot Docker Image
-        run: docker build -t my-dependabot-image -f Dockerfile .
+        run: docker build -t my-dependabot-image -f Dockerfile.dependabot .
 
       - name: Run Dependabot Scan with Docker
         run: |
