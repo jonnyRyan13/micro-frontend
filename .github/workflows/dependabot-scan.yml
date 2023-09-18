@@ -19,17 +19,16 @@ jobs:
           node-version: 16 # Adjust the Node.js version as needed
 
       - name: Change to packages/container directory
-        run: cd packages/container
+        run: cd packages/container && ls
 
       - name: Install Dependencies
-        run: npm ci
+        run: cd packages/container  && npm ci
 
       - name: Build UI Application
         run: npm run build
 
       - name: Build Dependabot Docker Image
-        run: docker build -t my-dependabot-image -f Dockerfile .
-        working-directory: ./path/to/your/Dockerfile/directory
+        run: docker build -t my-dependabot-image -f Dockerfile.dependabot .
 
       - name: Run Dependabot Scan with Docker
         run: |
