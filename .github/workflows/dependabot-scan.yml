@@ -1,9 +1,8 @@
 name: Dependabot Vulnerability Scan
-# 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
 on:
   pull_request:
     branches:
-      - develop
+      - master
 
 jobs:
   dependabot-scan:
