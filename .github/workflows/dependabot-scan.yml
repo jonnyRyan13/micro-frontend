@@ -1,4 +1,4 @@
-name: Build and Dependabot Scan
+name: Build and Dependabot Scan TEST
 
 on:
   push:
@@ -26,11 +26,6 @@ jobs:
 
       - name: Build UI Application
         run: npm run build
-
-      - name: Set up Docker
-        uses: docker/setup-docker@v2
-        # with:
-        #   docker-host: tcp://127.0.0.1:2375 # Optional, if needed
 
       - name: Build Dependabot Docker Image
         run: docker build -t my-dependabot-image -f Dockerfile .
