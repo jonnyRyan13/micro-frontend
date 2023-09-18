@@ -6,7 +6,7 @@ on:
 
 jobs:
   dependabot-scan:
-    runs-on: uhg-runner
+    runs-on: ubuntu-latest #im dumb
 
     steps:
       - name: Checkout Code
