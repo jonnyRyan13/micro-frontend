@@ -18,11 +18,9 @@ jobs:
         with:
           node-version: 16 # Adjust the Node.js version as needed
 
-      - name: Change to packages/container directory
-        run: cd packages/container && ls
 
       - name: Install Dependencies
-        run: npm i
+        run: cd packages/container  && npm ci
 
       - name: Build UI Application
         run: npm run build
